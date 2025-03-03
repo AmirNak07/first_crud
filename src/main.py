@@ -1,8 +1,23 @@
-from fastapi import FastAPI
+from contextlib import asynccontextmanager
 
+from fastapi import FastAPI
+from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
+
+from src.database import DATABASE_URL
 from src.routers.users import router as user_router
 
-app = FastAPI()
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    app.state.engine = create_async_engine(DATABASE_URL)
+    app.state.async_session_maker = async_sessionmaker(
+        app.state.engine, expire_on_commit=False
+    )
+    yield
+    await app.state.engine.dispose()
+
+
+app = FastAPI(lifespan=lifespan)
 
 
 @app.get("/ping")
