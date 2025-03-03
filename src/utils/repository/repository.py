@@ -82,11 +82,20 @@ class SQLAlchemyRepository(AbstarctRepository):
         stmt = (
             update(cls.model).where(cls.model.uuid == user_uuid).values(**user_update)
         )
-        res = await session.execute(stmt)
-        return res.rowcount
+        try:
+            await session.execute(stmt)
+        except SQLAlchemyError as e:
+            raise RepositoryException(
+                "Ошибка базы данных при изменении записи по UUID."
+            ) from e
 
     @classmethod
     async def delete(cls, session: AsyncSession, user_uuid: uuid.UUID):
         stmt = delete(cls.model).where(cls.model.uuid == user_uuid)
-        res = await session.execute(stmt)
-        return res.rowcount
+        try:
+            res = await session.execute(stmt)
+            return res.rowcount
+        except SQLAlchemyError as e:
+            raise RepositoryException(
+                "Ошибка базы данных при удалении записи по UUID."
+            ) from e

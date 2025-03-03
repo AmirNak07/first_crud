@@ -85,16 +85,46 @@ async def update_user(
     user_update: UserProfilePatch,
     user_service: Annotated[UsersService, Depends(users_service)],
 ):
-    patched_user = await user_service.patch_user(user_uuid, user_update)
-    if patched_user:
+    try:
+        await user_service.patch_user(user_uuid, user_update)
         return {"status": "ok"}
+    except EntityNotFoundException:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found.",
+        ) from None
+    except BusinessValidationError:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Validation error.",
+        ) from None
+    except Exception:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Internal Server Error",
+        ) from None
 
 
 @router.delete("/user/{user_uuid}", status_code=status.HTTP_200_OK)
 async def delete_user(
-    user_uuid: uuid.UUID,
-    user_service: Annotated[UsersService, Depends(users_service)]
+    user_uuid: uuid.UUID, user_service: Annotated[UsersService, Depends(users_service)]
 ):
-    deleted_user = await user_service.delte_user(user_uuid)
-    if deleted_user:
-        return {"status": "ok"}
+    try:
+        deleted_user = await user_service.delte_user(user_uuid)
+        if deleted_user:
+            return {"status": "ok"}
+    except EntityNotFoundException:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found.",
+        ) from None
+    except BusinessValidationError:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Validation error.",
+        ) from None
+    except Exception:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Internal Server Error",
+        ) from None
