@@ -25,16 +25,16 @@ async def create_user(
     except EntityAlreadyExistsException:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
-            detail="Пользователь уже существует",
+            detail="User already exists.",
         ) from None
     except BusinessValidationError:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, detail="Ошибка валидации"
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Validation error."
         ) from None
     except Exception:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Ошибка сервера",
+            detail="Internal Server Error",
         ) from None
 
 

@@ -30,7 +30,7 @@ class Base(AsyncAttrs, DeclarativeBase):
     repr_cols = ()
 
     def __repr__(self):
-        '''Relationship не используется в repr(), т.к. могут привести к неожиданным подгрузкам'''
+        """Relationship не используется в repr(), т.к. могут привести к неожиданным подгрузкам"""
         cols = []
         for idx, col in enumerate(self.__table__.columns.keys()):
             if col in self.repr_cols or idx < self.repr_cols_num:

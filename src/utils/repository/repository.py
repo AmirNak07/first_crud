@@ -42,11 +42,11 @@ class SQLAlchemyRepository(AbstarctRepository):
             return res.scalar_one()
         except IntegrityError as e:
             raise RepositoryException(
-                "Ошибка целостности данных при добавлении записи."
+                "Data integrity error when adding a record."
             ) from e
         except SQLAlchemyError as e:
             raise RepositoryException(
-                "Ошибка базы данных при добавлении записи."
+                "Database error when adding a record."
             ) from e
 
     @classmethod
@@ -58,7 +58,7 @@ class SQLAlchemyRepository(AbstarctRepository):
             return res
         except SQLAlchemyError as e:
             raise RepositoryException(
-                "Ошибка базы данных при получении списка записей."
+                "Database error when getting a list of records."
             ) from e
 
     @classmethod
@@ -72,7 +72,7 @@ class SQLAlchemyRepository(AbstarctRepository):
             return res
         except SQLAlchemyError as e:
             raise RepositoryException(
-                "Ошибка базы данных при поиске записи по UUID."
+                "Database error when searching for a record by UUID."
             ) from e
 
     @classmethod
@@ -86,7 +86,7 @@ class SQLAlchemyRepository(AbstarctRepository):
             await session.execute(stmt)
         except SQLAlchemyError as e:
             raise RepositoryException(
-                "Ошибка базы данных при изменении записи по UUID."
+                "Database error when changing a record by UUID."
             ) from e
 
     @classmethod
@@ -97,5 +97,5 @@ class SQLAlchemyRepository(AbstarctRepository):
             return res.rowcount
         except SQLAlchemyError as e:
             raise RepositoryException(
-                "Ошибка базы данных при удалении записи по UUID."
+                "Database error when deleting a record by UUID."
             ) from e

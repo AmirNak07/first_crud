@@ -22,7 +22,7 @@ class UsersService:
                 return user_uuid
             except Exception as e:
                 raise EntityAlreadyExistsException(
-                    "Пользователь с данным идентификатором уже существует."
+                    "The user with this ID already exists."
                 ) from e
 
     async def find_all_users(self) -> list[UserProfile]:
@@ -32,7 +32,7 @@ class UsersService:
                 return users
             except Exception as e:
                 raise BusinessValidationError(
-                    "При получении списка пользователей произошла ошибка."
+                    "An error occurred while retrieving the list of users details."
                 ) from e
 
     async def find_user(self, user_uuid: UUID):
@@ -41,13 +41,13 @@ class UsersService:
                 user = await self.tasks_repo.find(uow.session, user_uuid)
                 print(user)
                 if user is None:
-                    raise EntityNotFoundException("Пользователь не найден.")
+                    raise EntityNotFoundException("User not found.")
                 return user
             except EntityNotFoundException:
                 raise
             except Exception as e:
                 raise BusinessValidationError(
-                    "При получении сведений о пользователе произошла ошибка."
+                    "An error occurred while retrieving the user details."
                 ) from e
 
     async def patch_user(self, user_uuid: UUID, user_update: UserProfilePatch):
@@ -62,7 +62,7 @@ class UsersService:
             raise
         except Exception as e:
             raise BusinessValidationError(
-                "При изменении сведений о пользователе произошла ошибка."
+                "An error occurred while patching the user details."
             ) from e
 
     async def delte_user(self, user_uuid: UUID):
@@ -70,7 +70,7 @@ class UsersService:
             async with unit_of_work() as uow:
                 user = await self.tasks_repo.find(uow.session, user_uuid)
                 if user is None:
-                    raise EntityNotFoundException("Пользователь не найден.")
+                    raise EntityNotFoundException("User not found.")
                 res = await self.tasks_repo.delete(uow.session, user_uuid)
                 if res == 1:
                     return True
@@ -79,5 +79,5 @@ class UsersService:
             raise
         except Exception as e:
             raise BusinessValidationError(
-                "При изменении сведений о пользователе произошла ошибка."
+                "An error occurred while deleting the user details."
             ) from e
