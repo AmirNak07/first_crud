@@ -13,18 +13,16 @@ engine = create_async_engine(DATABASE_URL)
 async_session_maker = async_sessionmaker(engine, expire_on_commit=False)
 
 
-created_at = Annotated[datetime, mapped_column(server_default=func.now())]
-updated_at = Annotated[
-    datetime,
-    mapped_column(server_default=func.now(), server_onupdate=func.now()),
-]
-
-
 class Base(AsyncAttrs, DeclarativeBase):
     __abstract__ = True
 
-    created_at: Mapped[created_at]
-    updated_at: Mapped[updated_at]
+    created_at: Mapped[Annotated[datetime, mapped_column(server_default=func.now())]]
+    updated_at: Mapped[
+        Annotated[
+            datetime,
+            mapped_column(server_default=func.now(), server_onupdate=func.now()),
+        ]
+    ]
 
     repr_cols_num = 0
     repr_cols = ()
