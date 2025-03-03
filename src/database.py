@@ -5,10 +5,6 @@ from sqlalchemy import func
 from sqlalchemy.ext.asyncio import AsyncAttrs
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
-from src.config import settings
-
-DATABASE_URL = f"postgresql+asyncpg://{settings.POSTGRES_USER}:{settings.POSTGRES_PASSWORD}@{settings.POSTGRES_HOST}:{settings.POSTGRES_PORT}/{settings.POSTGRES_DB}"
-
 
 class Base(AsyncAttrs, DeclarativeBase):
     __abstract__ = True

@@ -12,10 +12,11 @@ class Settings(BaseSettings):
 
     model_config = SettingsConfigDict(env_file="./.env")
 
+    @property
+    def DATABASE_URL(self) -> str:
+        return f"postgresql+asyncpg://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
 
-@lru_cache
-def get_settings():
-    return Settings()
-
-
-settings = get_settings()
+    @classmethod
+    @lru_cache
+    def get_settings(cls) -> "Settings":
+        return cls()
