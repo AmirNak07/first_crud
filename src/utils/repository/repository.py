@@ -45,9 +45,7 @@ class SQLAlchemyRepository(AbstarctRepository):
                 "Data integrity error when adding a record."
             ) from e
         except SQLAlchemyError as e:
-            raise RepositoryException(
-                "Database error when adding a record."
-            ) from e
+            raise RepositoryException("Database error when adding a record.") from e
 
     @classmethod
     async def find_all(cls, session: AsyncSession):
