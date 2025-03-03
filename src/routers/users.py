@@ -2,6 +2,7 @@ import uuid
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.schemas.users import UserProfileAdd, UserProfilePatch
 from src.services.exceptions import (
@@ -10,17 +11,19 @@ from src.services.exceptions import (
     EntityNotFoundException,
 )
 from src.services.users import UsersService
-from src.utils.dependencies import users_service
+from src.utils.dependencies import get_session, users_service
 
 router = APIRouter()
 
 
 @router.post("/create_user", status_code=status.HTTP_201_CREATED)
 async def create_user(
-    user: UserProfileAdd, user_service: Annotated[UsersService, Depends(users_service)]
+    user: UserProfileAdd,
+    user_service: Annotated[UsersService, Depends(users_service)],
+    session: Annotated[AsyncSession, Depends(get_session)],
 ):
     try:
-        user_uuid = await user_service.add_user(user)
+        user_uuid = await user_service.add_user(user, session)
         return {"user_uuid": user_uuid}
     except EntityAlreadyExistsException:
         raise HTTPException(
@@ -39,9 +42,12 @@ async def create_user(
 
 
 @router.get("/users", status_code=status.HTTP_200_OK)
-async def get_users(user_service: Annotated[UsersService, Depends(users_service)]):
+async def get_users(
+    user_service: Annotated[UsersService, Depends(users_service)],
+    session: Annotated[AsyncSession, Depends(get_session)],
+):
     try:
-        users = await user_service.find_all_users()
+        users = await user_service.find_all_users(session)
         return users
     except BusinessValidationError:
         raise HTTPException(
@@ -57,10 +63,12 @@ async def get_users(user_service: Annotated[UsersService, Depends(users_service)
 
 @router.get("/user/{uuid}", status_code=status.HTTP_200_OK)
 async def get_user(
-    uuid: uuid.UUID, user_service: Annotated[UsersService, Depends(users_service)]
+    uuid: uuid.UUID,
+    user_service: Annotated[UsersService, Depends(users_service)],
+    session: Annotated[AsyncSession, Depends(get_session)],
 ):
     try:
-        user = await user_service.find_user(uuid)
+        user = await user_service.find_user(uuid, session)
         return user
     except EntityNotFoundException:
         raise HTTPException(
@@ -84,9 +92,10 @@ async def update_user(
     user_uuid: uuid.UUID,
     user_update: UserProfilePatch,
     user_service: Annotated[UsersService, Depends(users_service)],
+    session: Annotated[AsyncSession, Depends(get_session)],
 ):
     try:
-        await user_service.patch_user(user_uuid, user_update)
+        await user_service.patch_user(user_uuid, user_update, session)
         return {"status": "ok"}
     except EntityNotFoundException:
         raise HTTPException(
@@ -107,10 +116,12 @@ async def update_user(
 
 @router.delete("/user/{user_uuid}", status_code=status.HTTP_200_OK)
 async def delete_user(
-    user_uuid: uuid.UUID, user_service: Annotated[UsersService, Depends(users_service)]
+    user_uuid: uuid.UUID,
+    user_service: Annotated[UsersService, Depends(users_service)],
+    session: Annotated[AsyncSession, Depends(get_session)],
 ):
     try:
-        deleted_user = await user_service.delte_user(user_uuid)
+        deleted_user = await user_service.delete_user(user_uuid, session)
         if deleted_user:
             return {"status": "ok"}
     except EntityNotFoundException:
