@@ -1,5 +1,5 @@
 from src.models.users import UserProfileOrm
-from src.utils.repository import SQLAlchemyRepository
+from src.utils.repository.repository import SQLAlchemyRepository
 
 
 class UsersRepository(SQLAlchemyRepository):

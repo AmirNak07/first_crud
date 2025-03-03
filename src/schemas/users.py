@@ -20,3 +20,13 @@ class UserProfileAdd(BaseModel):
 
 class UserProfile(UserProfileAdd):
     uuid: UUID4
+
+
+class UserProfilePatch(BaseModel):
+    name: str | None = Field(default=None)
+    about_me: str | None = Field(default=None)
+    age: int | None = Field(gt=0, le=120, default=None)
+    city: str | None = Field(default=None)
+    sex: SexEnum | None = Field(default=None)
+
+    model_config = ConfigDict(from_attributes=True)
