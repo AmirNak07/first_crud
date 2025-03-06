@@ -5,8 +5,8 @@ from sqlalchemy import delete, insert, select, update
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.schemas.users import UserProfilePatch
-from src.utils.repository.exceptions import RepositoryException
+from app.core.exceptions import RepositoryException
+from app.schemas.user import UserProfilePatch
 
 
 class AbstarctRepository(ABC):

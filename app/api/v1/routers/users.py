@@ -4,14 +4,14 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.schemas.users import UserProfileAdd, UserProfilePatch
-from src.services.exceptions import (
+from app.schemas.user import UserProfileAdd, UserProfilePatch
+from app.services.exceptions import (
     BusinessValidationError,
     EntityAlreadyExistsException,
     EntityNotFoundException,
 )
-from src.services.users import UsersService
-from src.utils.dependencies import get_session, users_service
+from app.services.user_service import UsersService
+from app.utils.dependencies import get_session, users_service
 
 router = APIRouter()
 

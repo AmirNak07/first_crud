@@ -1,7 +1,7 @@
 from fastapi import Request
 
-from src.repositories.users import UsersRepository
-from src.services.users import UsersService
+from app.repositories.user_repository import UsersRepository
+from app.services.user_service import UsersService
 
 
 def users_service() -> UsersService:

@@ -2,13 +2,13 @@ from uuid import UUID
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.schemas.users import UserProfile, UserProfileAdd, UserProfilePatch
-from src.services.exceptions import (
+from app.repositories.base_repository import AbstarctRepository
+from app.schemas.user import UserProfile, UserProfileAdd, UserProfilePatch
+from app.services.exceptions import (
     BusinessValidationError,
     EntityAlreadyExistsException,
     EntityNotFoundException,
 )
-from src.utils.repository.repository import AbstarctRepository
 
 
 class UsersService:

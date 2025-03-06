@@ -5,8 +5,8 @@ from sqlalchemy import Integer, String
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column
 
-from src.database import Base
-from src.schemas.users import UserProfile
+from app.core.database import Base
+from app.schemas.user import UserProfile
 
 
 class UserProfileOrm(Base):
