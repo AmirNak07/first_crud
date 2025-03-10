@@ -17,12 +17,12 @@ async def lifespan(app: FastAPI):
     await app.state.engine.dispose()
 
 
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(lifespan=lifespan, title="My Tinder")
 
 
-@app.get("/ping")
+@app.get("/ping", tags=["Test"])
 async def ping():
     return {"status": "OK"}
 
 
-app.include_router(user_router)
+app.include_router(user_router, tags=["User"])
