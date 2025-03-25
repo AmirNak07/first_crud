@@ -2,6 +2,7 @@ from uuid import UUID
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.models.user import UserProfileOrm
 from app.repositories.base_repository import AbstarctRepository
 from app.schemas.user import UserProfile, UserProfileAdd, UserProfilePatch
 from app.services.exceptions import (
@@ -17,10 +18,13 @@ class UsersService:
 
     async def add_user(self, user: UserProfileAdd, session: AsyncSession):
         user_dict = user.model_dump()
+        user_orm = UserProfileOrm(**user_dict)
         try:
-            user_uuid = await self.tasks_repo.add_one(session, user_dict)
+            await self.tasks_repo.add_one(session, user_orm)
+            await session.flush()
+            uuid = user_orm.uuid
             await session.commit()
-            return user_uuid
+            return uuid
         except Exception as e:
             await session.rollback()
             raise EntityAlreadyExistsException(
@@ -57,8 +61,9 @@ class UsersService:
             user = await self.tasks_repo.find(session, user_uuid)
             if user is None:
                 raise EntityNotFoundException("Пользователь не найден.")
-            await self.tasks_repo.patch(session, user_uuid, user_update_dict)
+            user = await self.tasks_repo.patch(session, user, user_update_dict)
             await session.commit()
+            return user
         except EntityNotFoundException:
             raise
         except Exception as e:

@@ -1,12 +1,13 @@
 import uuid
 from abc import ABC, abstractmethod
+from typing import Any
 
-from sqlalchemy import delete, insert, select, update
+from sqlalchemy import delete, select
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.exceptions import RepositoryException
-from app.schemas.user import UserProfilePatch
+from app.models.user import UserProfileOrm
 
 
 class AbstarctRepository(ABC):
@@ -35,11 +36,9 @@ class SQLAlchemyRepository(AbstarctRepository):
     model = None
 
     @classmethod
-    async def add_one(cls, session: AsyncSession, data: dict):
-        stmt = insert(cls.model).values(**data).returning(cls.model.uuid)
+    async def add_one(cls, session: AsyncSession, data: Any):
         try:
-            res = await session.execute(stmt)
-            return res.scalar_one()
+            session.add(data)
         except IntegrityError as e:
             raise RepositoryException(
                 "Data integrity error when adding a record."
@@ -65,8 +64,6 @@ class SQLAlchemyRepository(AbstarctRepository):
         try:
             res = await session.execute(stmt)
             res = res.scalar_one_or_none()
-            if res is not None:
-                return res.to_read_model()
             return res
         except SQLAlchemyError as e:
             raise RepositoryException(
@@ -75,13 +72,13 @@ class SQLAlchemyRepository(AbstarctRepository):
 
     @classmethod
     async def patch(
-        cls, session: AsyncSession, user_uuid: uuid.UUID, user_update: UserProfilePatch
+        cls, session: AsyncSession, user: UserProfileOrm, user_update: dict
     ):
-        stmt = (
-            update(cls.model).where(cls.model.uuid == user_uuid).values(**user_update)
-        )
         try:
-            await session.execute(stmt)
+            for field, value in user_update.items():
+                setattr(user, field, value)
+            await session.flush()
+            return user
         except SQLAlchemyError as e:
             raise RepositoryException(
                 "Database error when changing a record by UUID."
