@@ -77,11 +77,8 @@ class UsersService:
             user = await self.tasks_repo.find(session, user_uuid)
             if user is None:
                 raise EntityNotFoundException("User not found.")
-            res = await self.tasks_repo.delete(session, user_uuid)
+            await self.tasks_repo.delete(session, user)
             await session.commit()
-            if res == 1:
-                return True
-            return False
         except EntityNotFoundException:
             raise
         except Exception as e:

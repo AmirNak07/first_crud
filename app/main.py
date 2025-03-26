@@ -10,9 +10,7 @@ from app.core.config import settings
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     app.state.engine = create_async_engine(settings.DATABASE_URL, echo=False)
-    app.state.async_session_maker = async_sessionmaker(
-        app.state.engine
-    )
+    app.state.async_session_maker = async_sessionmaker(app.state.engine)
     yield
     await app.state.engine.dispose()
 

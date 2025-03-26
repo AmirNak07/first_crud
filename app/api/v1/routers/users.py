@@ -121,9 +121,8 @@ async def delete_user(
     session: Annotated[AsyncSession, Depends(get_session)],
 ):
     try:
-        deleted_user = await user_service.delete_user(user_uuid, session)
-        if deleted_user:
-            return {"status": "ok"}
+        await user_service.delete_user(user_uuid, session)
+        return {"status": "ok"}
     except EntityNotFoundException:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

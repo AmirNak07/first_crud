@@ -2,7 +2,7 @@ import uuid
 from abc import ABC, abstractmethod
 from typing import Any
 
-from sqlalchemy import delete, select
+from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -85,11 +85,9 @@ class SQLAlchemyRepository(AbstarctRepository):
             ) from e
 
     @classmethod
-    async def delete(cls, session: AsyncSession, user_uuid: uuid.UUID):
-        stmt = delete(cls.model).where(cls.model.uuid == user_uuid)
+    async def delete(cls, session: AsyncSession, user: UserProfileOrm):
         try:
-            res = await session.execute(stmt)
-            return res.rowcount
+            await session.delete(user)
         except SQLAlchemyError as e:
             raise RepositoryException(
                 "Database error when deleting a record by UUID."
