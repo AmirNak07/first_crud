@@ -2,7 +2,7 @@ import uuid
 from abc import ABC, abstractmethod
 from typing import Any
 
-from sqlalchemy import select
+from sqlalchemy import delete, select
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -29,6 +29,10 @@ class AbstarctRepository(ABC):
 
     @abstractmethod
     async def delete():
+        raise NotImplementedError
+
+    @abstractmethod
+    async def delete_all():
         raise NotImplementedError
 
 
@@ -92,3 +96,15 @@ class SQLAlchemyRepository(AbstarctRepository):
             raise RepositoryException(
                 "Database error when deleting a record by UUID."
             ) from e
+
+    @classmethod
+    async def delete_all(cls, session: AsyncSession):
+        try:
+            stmt = delete(cls.model)
+            await session.execute(stmt)
+        except SQLAlchemyError as e:
+            raise RepositoryException(
+                "Database error when deleting all records"
+            ) from e
+        except Exception:
+            raise

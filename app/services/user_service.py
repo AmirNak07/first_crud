@@ -86,3 +86,12 @@ class UsersService:
             raise BusinessValidationError(
                 "An error occurred while deleting the user details."
             ) from e
+
+
+    async def delete_all(self, session: AsyncSession):
+        try:
+            await self.tasks_repo.delete_all(session)
+            await session.commit()
+        except Exception:
+            await session.rollback()
+            raise
