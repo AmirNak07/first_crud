@@ -10,7 +10,7 @@ from app.core.exceptions import RepositoryException
 from app.models.user import UserProfileOrm
 
 
-class AbstarctRepository(ABC):
+class AbstractRepository(ABC):
     @abstractmethod
     async def add_one():
         raise NotImplementedError
@@ -36,7 +36,7 @@ class AbstarctRepository(ABC):
         raise NotImplementedError
 
 
-class SQLAlchemyRepository(AbstarctRepository):
+class SQLAlchemyRepository(AbstractRepository):
     model = None
 
     @classmethod
