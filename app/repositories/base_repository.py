@@ -11,28 +11,34 @@ from app.models.user import UserProfileOrm
 
 
 class AbstractRepository(ABC):
+    @classmethod
     @abstractmethod
-    async def add_one():
+    async def add_one(cls):
         raise NotImplementedError
 
+    @classmethod
     @abstractmethod
-    async def find_all():
+    async def find_all(cls):
         raise NotImplementedError
 
+    @classmethod
     @abstractmethod
-    async def find():
+    async def find(cls):
         raise NotImplementedError
 
+    @classmethod
     @abstractmethod
-    async def patch():
+    async def patch(cls):
         raise NotImplementedError
 
+    @classmethod
     @abstractmethod
-    async def delete():
+    async def delete(cls):
         raise NotImplementedError
 
+    @classmethod
     @abstractmethod
-    async def delete_all():
+    async def delete_all(cls):
         raise NotImplementedError
 
 
