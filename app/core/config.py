@@ -8,6 +8,8 @@ class Settings(BaseSettings):
     POSTGRES_PORT: int
     POSTGRES_DB: str
 
+    MODE: str
+
     model_config = SettingsConfigDict(env_file="./.env")
 
     @property
