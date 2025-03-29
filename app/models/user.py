@@ -15,7 +15,7 @@ class UserProfileOrm(Base):
         UUID(as_uuid=True), primary_key=True, default=uuid4
     )
     name: Mapped[str] = mapped_column(String)
-    about_me: Mapped[str | None] = mapped_column(String, default=None)
+    about_me: Mapped[str | None] = mapped_column(String, default=None, nullable=True)
     age: Mapped[int] = mapped_column(Integer)
     city: Mapped[str] = mapped_column(String)
     sex: Mapped[str] = mapped_column(String)
