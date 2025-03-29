@@ -3,7 +3,7 @@ from uuid import UUID
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.user import UserProfileOrm
-from app.repositories.base_repository import AbstarctRepository
+from app.repositories.base_repository import AbstractRepository
 from app.schemas.user import UserProfile, UserProfileAdd, UserProfilePatch
 from app.services.exceptions import (
     BusinessValidationError,
@@ -13,8 +13,8 @@ from app.services.exceptions import (
 
 
 class UsersService:
-    def __init__(self, tasks_repo: AbstarctRepository):
-        self.tasks_repo: AbstarctRepository = tasks_repo()
+    def __init__(self, tasks_repo: AbstractRepository):
+        self.tasks_repo: AbstractRepository = tasks_repo()
 
     async def add_user(self, user: UserProfileAdd, session: AsyncSession):
         user_dict = user.model_dump()
