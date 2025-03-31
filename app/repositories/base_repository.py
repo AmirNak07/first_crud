@@ -61,8 +61,7 @@ class SQLAlchemyRepository(AbstractRepository):
         stmt = select(cls.model)
         try:
             res = await session.execute(stmt)
-            res = [row[0].to_read_model() for row in res.all()]
-            return res
+            return res.all()
         except SQLAlchemyError as e:
             raise RepositoryException(
                 "Database error when getting a list of records."

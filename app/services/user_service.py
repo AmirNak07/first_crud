@@ -34,7 +34,8 @@ class UsersService:
     async def find_all_users(self, session: AsyncSession) -> list[UserProfile]:
         try:
             users = await self.tasks_repo.find_all(session)
-            return users
+            res = [user[0].to_read_model() for user in users]
+            return res
         except Exception as e:
             raise BusinessValidationError(
                 "An error occurred while retrieving the list of users details."
@@ -45,7 +46,7 @@ class UsersService:
             user = await self.tasks_repo.find(session, user_uuid)
             if user is None:
                 raise EntityNotFoundException("User not found.")
-            return user
+            return user.to_read_model()
         except EntityNotFoundException:
             raise
         except Exception as e:
@@ -65,6 +66,7 @@ class UsersService:
             await session.commit()
             return user
         except EntityNotFoundException:
+            await session.rollback()
             raise
         except Exception as e:
             await session.rollback()
