@@ -108,8 +108,6 @@ class SQLAlchemyRepository(AbstractRepository):
             stmt = delete(cls.model)
             await session.execute(stmt)
         except SQLAlchemyError as e:
-            raise RepositoryException(
-                "Database error when deleting all records"
-            ) from e
+            raise RepositoryException("Database error when deleting all records") from e
         except Exception:
             raise
