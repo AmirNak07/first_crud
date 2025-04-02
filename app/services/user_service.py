@@ -12,11 +12,11 @@ from app.services.exceptions import (
 
 
 class UsersService:
-    def __init__(self, session: AsyncSession, tasks_repo: UsersRepository):
+    def __init__(self, session: AsyncSession, tasks_repo: UsersRepository) -> None:
         self.tasks_repo: UsersRepository = tasks_repo()
         self.session: AsyncSession = session
 
-    async def add_user(self, user: UserProfileAdd):
+    async def add_user(self, user: UserProfileAdd) -> UUID:
         user_dict = user.model_dump()
         try:
             new_user = await self.tasks_repo.add_one(self.session, user_dict)
@@ -40,7 +40,7 @@ class UsersService:
                 "An error occurred while retrieving the list of users details."
             ) from e
 
-    async def find_user(self, user_uuid: UUID):
+    async def find_user(self, user_uuid: UUID) -> UserProfile:
         try:
             user = await self.tasks_repo.find(self.session, user_uuid)
             if user is None:
@@ -53,7 +53,7 @@ class UsersService:
                 "An error occurred while retrieving the user details."
             ) from e
 
-    async def patch_user(self, user_uuid: UUID, user_update: UserProfilePatch):
+    async def patch_user(self, user_uuid: UUID, user_update: UserProfilePatch) -> None:
         user_update_dict = user_update.model_dump(exclude_defaults=True)
         try:
             user = await self.tasks_repo.find(self.session, user_uuid)
@@ -70,7 +70,7 @@ class UsersService:
                 "An error occurred while patching the user details."
             ) from e
 
-    async def delete_user(self, user_uuid: UUID):
+    async def delete_user(self, user_uuid: UUID) -> None:
         try:
             user = await self.tasks_repo.find(self.session, user_uuid)
             if user is None:
@@ -85,7 +85,7 @@ class UsersService:
                 "An error occurred while deleting the user details."
             ) from e
 
-    async def delete_all(self):
+    async def delete_all(self) -> None:
         try:
             await self.tasks_repo.delete_all(self.session)
             await self.session.commit()
