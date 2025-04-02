@@ -11,42 +11,35 @@ from app.models.user import UserProfileOrm
 
 
 class AbstractRepository(ABC):
-    @classmethod
     @abstractmethod
-    async def add_one(cls):
+    async def add_one(self):
         raise NotImplementedError
 
-    @classmethod
     @abstractmethod
-    async def find_all(cls):
+    async def find_all(self):
         raise NotImplementedError
 
-    @classmethod
     @abstractmethod
-    async def find(cls):
+    async def find(self):
         raise NotImplementedError
 
-    @classmethod
     @abstractmethod
-    async def patch(cls):
+    async def patch(self):
         raise NotImplementedError
 
-    @classmethod
     @abstractmethod
-    async def delete(cls):
+    async def delete(self):
         raise NotImplementedError
 
-    @classmethod
     @abstractmethod
-    async def delete_all(cls):
+    async def delete_all(self):
         raise NotImplementedError
 
 
 class SQLAlchemyRepository(AbstractRepository):
     model = None
 
-    @classmethod
-    async def add_one(cls, session: AsyncSession, data: Any):
+    async def add_one(self, session: AsyncSession, data: Any):
         try:
             session.add(data)
         except IntegrityError as e:
@@ -56,9 +49,8 @@ class SQLAlchemyRepository(AbstractRepository):
         except SQLAlchemyError as e:
             raise RepositoryException("Database error when adding a record.") from e
 
-    @classmethod
-    async def find_all(cls, session: AsyncSession):
-        stmt = select(cls.model)
+    async def find_all(self, session: AsyncSession):
+        stmt = select(self.model)
         try:
             res = await session.execute(stmt)
             return res.all()
@@ -67,9 +59,8 @@ class SQLAlchemyRepository(AbstractRepository):
                 "Database error when getting a list of records."
             ) from e
 
-    @classmethod
-    async def find(cls, session: AsyncSession, uuid: uuid.UUID):
-        stmt = select(cls.model).where(cls.model.uuid == uuid)
+    async def find(self, session: AsyncSession, uuid: uuid.UUID):
+        stmt = select(self.model).where(self.model.uuid == uuid)
         try:
             res = await session.execute(stmt)
             res = res.scalar_one_or_none()
@@ -79,9 +70,8 @@ class SQLAlchemyRepository(AbstractRepository):
                 "Database error when searching for a record by UUID."
             ) from e
 
-    @classmethod
     async def patch(
-        cls, session: AsyncSession, user: UserProfileOrm, user_update: dict
+        self, session: AsyncSession, user: UserProfileOrm, user_update: dict
     ):
         try:
             for field, value in user_update.items():
@@ -93,8 +83,7 @@ class SQLAlchemyRepository(AbstractRepository):
                 "Database error when changing a record by UUID."
             ) from e
 
-    @classmethod
-    async def delete(cls, session: AsyncSession, user: UserProfileOrm):
+    async def delete(self, session: AsyncSession, user: UserProfileOrm):
         try:
             await session.delete(user)
         except SQLAlchemyError as e:
@@ -102,10 +91,9 @@ class SQLAlchemyRepository(AbstractRepository):
                 "Database error when deleting a record by UUID."
             ) from e
 
-    @classmethod
-    async def delete_all(cls, session: AsyncSession):
+    async def delete_all(self, session: AsyncSession):
         try:
-            stmt = delete(cls.model)
+            stmt = delete(self.model)
             await session.execute(stmt)
         except SQLAlchemyError as e:
             raise RepositoryException("Database error when deleting all records") from e
