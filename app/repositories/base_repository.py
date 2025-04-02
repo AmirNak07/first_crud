@@ -1,6 +1,5 @@
 import uuid
 from abc import ABC, abstractmethod
-from typing import Any
 
 from sqlalchemy import delete, select
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
@@ -39,9 +38,11 @@ class AbstractRepository(ABC):
 class SQLAlchemyRepository(AbstractRepository):
     model = None
 
-    async def add_one(self, session: AsyncSession, data: Any):
+    async def add_one(self, session: AsyncSession, data: dict):
+        instance = self.model(**data)
         try:
-            session.add(data)
+            session.add(instance)
+            return instance
         except IntegrityError as e:
             raise RepositoryException(
                 "Data integrity error when adding a record."

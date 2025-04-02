@@ -2,7 +2,6 @@ from uuid import UUID
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.models.user import UserProfileOrm
 from app.repositories.user_repository import UsersRepository
 from app.schemas.user import UserProfile, UserProfileAdd, UserProfilePatch
 from app.services.exceptions import (
@@ -19,11 +18,10 @@ class UsersService:
 
     async def add_user(self, user: UserProfileAdd):
         user_dict = user.model_dump()
-        user_orm = UserProfileOrm(**user_dict)
         try:
-            await self.tasks_repo.add_one(self.session, user_orm)
+            new_user = await self.tasks_repo.add_one(self.session, user_dict)
             await self.session.flush()
-            uuid = user_orm.uuid
+            uuid = new_user.uuid
             await self.session.commit()
             return uuid
         except Exception as e:
@@ -35,7 +33,7 @@ class UsersService:
     async def find_all_users(self) -> list[UserProfile]:
         try:
             users = await self.tasks_repo.find_all(self.session)
-            res = [user[0].to_read_model() for user in users]
+            res = [UserProfile.model_validate(user[0]) for user in users]
             return res
         except Exception as e:
             raise BusinessValidationError(
@@ -47,7 +45,7 @@ class UsersService:
             user = await self.tasks_repo.find(self.session, user_uuid)
             if user is None:
                 raise EntityNotFoundException("User not found.")
-            return user.to_read_model()
+            return UserProfile.model_validate(user)
         except EntityNotFoundException:
             raise
         except Exception as e:
@@ -61,9 +59,8 @@ class UsersService:
             user = await self.tasks_repo.find(self.session, user_uuid)
             if user is None:
                 raise EntityNotFoundException("Пользователь не найден.")
-            user = await self.tasks_repo.patch(self.session, user, user_update_dict)
+            await self.tasks_repo.patch(self.session, user, user_update_dict)
             await self.session.commit()
-            return user
         except EntityNotFoundException:
             await self.session.rollback()
             raise
