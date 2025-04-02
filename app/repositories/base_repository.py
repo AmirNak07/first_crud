@@ -1,12 +1,15 @@
 import uuid
 from abc import ABC, abstractmethod
+from typing import Generic, TypeVar
 
 from sqlalchemy import delete, select
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.database import Base
 from app.core.exceptions import RepositoryException
-from app.models.user import UserProfileOrm
+
+T = TypeVar("T", bound=Base)
 
 
 class AbstractRepository(ABC):
@@ -35,10 +38,10 @@ class AbstractRepository(ABC):
         raise NotImplementedError
 
 
-class SQLAlchemyRepository(AbstractRepository):
-    model = None
+class SQLAlchemyRepository(AbstractRepository, Generic[T]):
+    model: type[T] = None
 
-    async def add_one(self, session: AsyncSession, data: dict):
+    async def add_one(self, session: AsyncSession, data: dict) -> T:
         instance = self.model(**data)
         try:
             session.add(instance)
@@ -50,7 +53,7 @@ class SQLAlchemyRepository(AbstractRepository):
         except SQLAlchemyError as e:
             raise RepositoryException("Database error when adding a record.") from e
 
-    async def find_all(self, session: AsyncSession):
+    async def find_all(self, session: AsyncSession) -> list[T]:
         stmt = select(self.model)
         try:
             res = await session.execute(stmt)
@@ -60,7 +63,7 @@ class SQLAlchemyRepository(AbstractRepository):
                 "Database error when getting a list of records."
             ) from e
 
-    async def find(self, session: AsyncSession, uuid: uuid.UUID):
+    async def find(self, session: AsyncSession, uuid: uuid.UUID) -> T:
         stmt = select(self.model).where(self.model.uuid == uuid)
         try:
             res = await session.execute(stmt)
@@ -71,20 +74,17 @@ class SQLAlchemyRepository(AbstractRepository):
                 "Database error when searching for a record by UUID."
             ) from e
 
-    async def patch(
-        self, session: AsyncSession, user: UserProfileOrm, user_update: dict
-    ):
+    async def patch(self, session: AsyncSession, user: T, user_update: dict) -> None:
         try:
             for field, value in user_update.items():
                 setattr(user, field, value)
             await session.flush()
-            return user
         except SQLAlchemyError as e:
             raise RepositoryException(
                 "Database error when changing a record by UUID."
             ) from e
 
-    async def delete(self, session: AsyncSession, user: UserProfileOrm):
+    async def delete(self, session: AsyncSession, user: T) -> None:
         try:
             await session.delete(user)
         except SQLAlchemyError as e:
@@ -92,7 +92,7 @@ class SQLAlchemyRepository(AbstractRepository):
                 "Database error when deleting a record by UUID."
             ) from e
 
-    async def delete_all(self, session: AsyncSession):
+    async def delete_all(self, session: AsyncSession) -> None:
         try:
             stmt = delete(self.model)
             await session.execute(stmt)
