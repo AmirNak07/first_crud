@@ -12,4 +12,3 @@ async def test_ping():
         response = await ac.get("/ping")
         assert response.status_code == 200
         assert response.json() == {"status": "OK"}
-
