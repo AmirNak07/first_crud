@@ -6,7 +6,6 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.core.database import Base
-from app.schemas.user import UserProfile
 
 
 class UserProfileOrm(Base):
@@ -23,13 +22,3 @@ class UserProfileOrm(Base):
     sex: Mapped[str] = mapped_column(String(8))
 
     repr_cols = ("uuid", "name")
-
-    def to_read_model(self) -> UserProfile:
-        return UserProfile(
-            name=self.name,
-            about_me=self.about_me,
-            age=self.age,
-            city=self.city,
-            sex=self.sex,
-            uuid=self.uuid,
-        )
