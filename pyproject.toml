@@ -21,6 +21,7 @@ test = [
     "httpx>=0.28.1",
     "pytest>=8.3.5",
     "pytest-asyncio>=0.26.0",
+    "pytest-dotenv>=0.5.2",
 ]
 
 [tool.ruff]
@@ -107,3 +108,13 @@ docstring-code-format = false
 # This only has an effect when the `docstring-code-format` setting is
 # enabled.
 docstring-code-line-length = "dynamic" 
+
+
+[tool.pytest.ini_options]
+pythonpath = ". app"
+env_override_existing_values = 1
+env_files =[
+    ".test.env"
+]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
