@@ -1,4 +1,4 @@
-class RepositoryException(Exception):
+class RepositoryError(Exception):
     """Общее исключение для ошибок на уровне репозитория."""
 
     pass
