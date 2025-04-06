@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import (
 
 from app.core.config import settings
 from app.core.database import Base
-from app.models.user import UserProfileOrm  # noqa: F401
+from app.models.user_model import UserProfileOrm  # noqa: F401
 
 TEST_DATABASE_URL = settings.DATABASE_URL
 pytest_plugins = ("pytest_asyncio",)
