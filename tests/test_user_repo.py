@@ -14,11 +14,6 @@ async def repo(async_test_session: AsyncSession) -> UsersRepository:
 
 
 @pytest.fixture
-async def clear_db(repo: UsersRepository) -> None:
-    await repo.delete_all()
-
-
-@pytest.fixture
 async def new_user(
     async_test_session: AsyncSession, repo: UsersRepository
 ) -> UserProfileOrm:
