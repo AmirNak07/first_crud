@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.exceptions import RepositoryError
 from app.repositories.user_repository import UsersRepository
-from app.schemas.user import UserProfile, UserProfileAdd, UserProfilePatch
+from app.schemas.user_schema import UserProfile, UserProfileAdd, UserProfilePatch
 from app.services.exceptions import (
     EntityNotFoundException,
 )

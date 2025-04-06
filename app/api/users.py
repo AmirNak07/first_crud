@@ -3,7 +3,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, status
 
-from app.schemas.user import UserProfileAdd, UserProfilePatch
+from app.schemas.user_schema import UserProfileAdd, UserProfilePatch
 from app.services.user_service import UsersService
 from app.utils.dependencies import users_service
 
