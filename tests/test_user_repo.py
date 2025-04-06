@@ -9,13 +9,13 @@ from app.repositories.user_repository import UsersRepository
 
 
 @pytest.fixture
-async def repo() -> UsersRepository:
-    return UsersRepository()
+async def repo(async_test_session: AsyncSession) -> UsersRepository:
+    return UsersRepository(async_test_session)
 
 
 @pytest.fixture
-async def clear_db(async_test_session: AsyncSession, repo: UsersRepository) -> None:
-    await repo.delete_all(async_test_session)
+async def clear_db(repo: UsersRepository) -> None:
+    await repo.delete_all()
 
 
 @pytest.fixture
@@ -30,7 +30,7 @@ async def new_user(
         "sex": "Мужской",
     }
 
-    new_user = await repo.add_one(async_test_session, user)
+    new_user = await repo.add_one(user)
     await async_test_session.flush()
     return new_user
 
@@ -48,9 +48,7 @@ class TestUsersRepository:
         assert new_user.city == "Эдем"
         assert new_user.sex == "Мужской"
 
-    async def test_find_all(
-        self, async_test_session: AsyncSession, repo: UsersRepository
-    ) -> None:
+    async def test_find_all(self, repo: UsersRepository) -> None:
         users = [
             {
                 "name": "Адам",
@@ -69,9 +67,9 @@ class TestUsersRepository:
         ]
 
         for user in users:
-            await repo.add_one(async_test_session, user)
+            await repo.add_one(user)
 
-        res = await repo.find_all(async_test_session)
+        res = await repo.find_all()
         assert res[0][0].name == "Адам"
         assert res[0][0].about_me == "Первый человек"
         assert res[0][0].age == 99
@@ -86,36 +84,32 @@ class TestUsersRepository:
 
     async def test_find_success(
         self,
-        async_test_session: AsyncSession,
         repo: UsersRepository,
         new_user: UserProfileOrm,
     ) -> None:
         uuid = new_user.uuid
 
-        res = await repo.find(async_test_session, uuid)
+        res = await repo.find(uuid)
         assert res.name == "Адам"
         assert res.about_me == "Первый человек"
         assert res.age == 99
         assert res.city == "Эдем"
         assert res.sex == "Мужской"
 
-    async def test_find_not_found(
-        self, async_test_session: AsyncSession, repo: UsersRepository
-    ) -> None:
-        user = await repo.find(async_test_session, uuid4())
+    async def test_find_not_found(self, repo: UsersRepository) -> None:
+        user = await repo.find(uuid4())
         assert user is None
 
     async def test_patch_success(
         self,
-        async_test_session: AsyncSession,
         repo: UsersRepository,
         new_user: UserProfileOrm,
     ) -> None:
         uuid = new_user.uuid
 
-        user = await repo.find(async_test_session, uuid)
+        user = await repo.find(uuid)
         new_data = {"name": "Новый юзер"}
-        await repo.patch(async_test_session, user, new_data)
+        await repo.patch(user, new_data)
 
         assert user.name == "Новый юзер"
 
@@ -125,6 +119,6 @@ class TestUsersRepository:
         repo: UsersRepository,
         new_user: UserProfileOrm,
     ) -> None:
-        await repo.delete(async_test_session, new_user)
+        await repo.delete(new_user)
         await async_test_session.flush()
         assert inspect(new_user).deleted is True

@@ -12,4 +12,4 @@ async def get_session(request: Request):
 
 
 def users_service(session: AsyncSession = Depends(get_session)) -> UsersService:
-    return UsersService(session, UsersRepository)
+    return UsersService(session, UsersRepository(session))
