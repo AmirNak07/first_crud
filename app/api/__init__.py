@@ -16,9 +16,11 @@ async def lifespan(app: APIRouter):
 
 
 main_router = APIRouter(lifespan=lifespan)
-main_router.include_router(users_router, tags=["User"])
 
 
 @main_router.get("/ping", tags=["Test"])
 async def ping():
     return {"status": "OK"}
+
+
+main_router.include_router(users_router, tags=["User"])

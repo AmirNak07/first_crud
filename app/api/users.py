@@ -10,7 +10,7 @@ from app.utils.dependencies import users_service
 router = APIRouter()
 
 
-@router.post("/create_user", status_code=status.HTTP_201_CREATED)
+@router.post("/users", status_code=status.HTTP_201_CREATED)
 async def create_user(
     user: UserProfileAdd,
     user_service: Annotated[UsersService, Depends(users_service)],
@@ -27,7 +27,7 @@ async def get_users(
     return users
 
 
-@router.get("/user/{uuid}", status_code=status.HTTP_200_OK)
+@router.get("/users/{uuid}", status_code=status.HTTP_200_OK)
 async def get_user(
     uuid: uuid.UUID,
     user_service: Annotated[UsersService, Depends(users_service)],
@@ -36,7 +36,7 @@ async def get_user(
     return user
 
 
-@router.patch("/user/{user_uuid}", status_code=status.HTTP_200_OK)
+@router.patch("/users/{user_uuid}", status_code=status.HTTP_200_OK)
 async def update_user(
     user_uuid: uuid.UUID,
     user_update: UserProfilePatch,
@@ -46,7 +46,7 @@ async def update_user(
     return {"status": "ok"}
 
 
-@router.delete("/user/{user_uuid}", status_code=status.HTTP_200_OK)
+@router.delete("/users/{user_uuid}", status_code=status.HTTP_200_OK)
 async def delete_user(
     user_uuid: uuid.UUID,
     user_service: Annotated[UsersService, Depends(users_service)],
