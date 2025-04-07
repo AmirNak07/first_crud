@@ -44,3 +44,8 @@ async def setup_and_teardown_db(async_engine):
 @pytest.fixture
 async def clear_db(repo: Base) -> None:
     await repo.delete_all()
+
+
+@pytest.fixture(scope="session", autouse=True)
+async def test_env() -> None:
+    assert settings.MODE == "TEST"
