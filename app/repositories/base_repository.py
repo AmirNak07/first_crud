@@ -1,4 +1,3 @@
-import uuid
 from abc import ABC, abstractmethod
 from typing import Generic, TypeVar
 
@@ -62,15 +61,15 @@ class SQLAlchemyRepository(AbstractRepository, Generic[T]):
                 "Database error when getting a list of records."
             ) from e
 
-    async def find(self, uuid: uuid.UUID) -> T:
+    async def find(self, id: int) -> T:
         try:
-            stmt = select(self.model).where(self.model.uuid == uuid)
+            stmt = select(self.model).where(self.model.telegram_id == id)
             res = await self.session.execute(stmt)
             res = res.scalar_one_or_none()
             return res
         except SQLAlchemyError as e:
             raise RepositoryError(
-                "Database error when searching for a record by UUID."
+                "Database error when searching for a record by Telegram id."
             ) from e
 
     async def patch(self, user: T, user_update: dict) -> None:
@@ -80,7 +79,7 @@ class SQLAlchemyRepository(AbstractRepository, Generic[T]):
             await self.session.flush()
         except SQLAlchemyError as e:
             raise RepositoryError(
-                "Database error when changing a record by UUID."
+                "Database error when changing a record by Telegram id."
             ) from e
 
     async def delete(self, user: T) -> None:
@@ -88,7 +87,7 @@ class SQLAlchemyRepository(AbstractRepository, Generic[T]):
             await self.session.delete(user)
         except SQLAlchemyError as e:
             raise RepositoryError(
-                "Database error when deleting a record by UUID."
+                "Database error when deleting a record by Telegram id."
             ) from e
 
     async def delete_all(self) -> None:

@@ -1,5 +1,3 @@
-from uuid import UUID
-
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -16,14 +14,14 @@ class UsersService:
         self.session: AsyncSession = session
         self.tasks_repo: UsersRepository = tasks_repo
 
-    async def add_user(self, user: UserProfileAdd) -> UUID:
+    async def add_user(self, user: UserProfileAdd) -> int:
         try:
             user_dict = user.model_dump()
             new_user = await self.tasks_repo.add_one(user_dict)
             await self.session.flush()
-            uuid = new_user.uuid
+            id = new_user.telegram_id
             await self.session.commit()
-            return uuid
+            return id
         except RepositoryError as e:
             await self.session.rollback()
             raise e
@@ -45,9 +43,9 @@ class UsersService:
                 "Database error occurred during find_all_users"
             ) from e
 
-    async def find_user(self, user_uuid: UUID) -> UserProfile:
+    async def find_user(self, user_id: int) -> UserProfile:
         try:
-            user = await self.tasks_repo.find(user_uuid)
+            user = await self.tasks_repo.find(user_id)
             if user is None:
                 await self.session.rollback()
                 raise EntityNotFoundException("User not found.")
@@ -59,10 +57,10 @@ class UsersService:
             await self.session.rollback()
             raise RepositoryError("Database error occurred during find_user") from e
 
-    async def patch_user(self, user_uuid: UUID, user_update: UserProfilePatch) -> None:
+    async def patch_user(self, user_id: int, user_update: UserProfilePatch) -> None:
         try:
             user_update_dict = user_update.model_dump(exclude_defaults=True)
-            user = await self.tasks_repo.find(user_uuid)
+            user = await self.tasks_repo.find(user_id)
             if user is None:
                 raise EntityNotFoundException("Пользователь не найден.")
             await self.tasks_repo.patch(user, user_update_dict)
@@ -74,9 +72,9 @@ class UsersService:
             await self.session.rollback()
             raise RepositoryError("Database error occurred during patch_user") from e
 
-    async def delete_user(self, user_uuid: UUID) -> None:
+    async def delete_user(self, user_id: int) -> None:
         try:
-            user = await self.tasks_repo.find(user_uuid)
+            user = await self.tasks_repo.find(user_id)
             if user is None:
                 raise EntityNotFoundException("User not found.")
             await self.tasks_repo.delete(user)

@@ -1,5 +1,3 @@
-from uuid import uuid4
-
 import pytest
 from sqlalchemy import inspect
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -82,9 +80,9 @@ class TestUsersRepository:
         repo: UsersRepository,
         new_user: UserProfileOrm,
     ) -> None:
-        uuid = new_user.uuid
+        telegram_id = new_user.telegram_id
 
-        res = await repo.find(uuid)
+        res = await repo.find(telegram_id)
         assert res.name == "Адам"
         assert res.about_me == "Первый человек"
         assert res.age == 99
@@ -92,7 +90,7 @@ class TestUsersRepository:
         assert res.sex == "Мужской"
 
     async def test_find_not_found(self, repo: UsersRepository) -> None:
-        user = await repo.find(uuid4())
+        user = await repo.find(0)
         assert user is None
 
     async def test_patch_success(
@@ -100,9 +98,9 @@ class TestUsersRepository:
         repo: UsersRepository,
         new_user: UserProfileOrm,
     ) -> None:
-        uuid = new_user.uuid
+        telegram_id = new_user.telegram_id
 
-        user = await repo.find(uuid)
+        user = await repo.find(telegram_id)
         new_data = {"name": "Новый юзер"}
         await repo.patch(user, new_data)
 

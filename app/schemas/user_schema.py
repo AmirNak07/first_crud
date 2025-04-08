@@ -1,6 +1,6 @@
 from enum import Enum
 
-from pydantic import UUID4, BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class SexEnum(str, Enum):
@@ -9,17 +9,18 @@ class SexEnum(str, Enum):
 
 
 class UserProfileAdd(BaseModel):
-    name: str
-    about_me: str | None = Field(default=None)
+    telegram_id: int
+    name: str = Field(max_length=100)
+    about_me: str | None = Field(default=None, max_length=300)
     age: int = Field(gt=0, le=120)
-    city: str
+    city: str = Field(max_length=50)
     sex: SexEnum
 
     model_config = ConfigDict(from_attributes=True)
 
 
 class UserProfile(UserProfileAdd):
-    uuid: UUID4
+    telegram_id: int
 
 
 class UserProfilePatch(BaseModel):

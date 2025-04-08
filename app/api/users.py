@@ -1,4 +1,3 @@
-import uuid
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, status
@@ -23,10 +22,10 @@ async def create_user(
         user_service (UsersService): Service for handling user logic.
 
     Returns:
-        dict: UUID of the created user.
+        dict: Telegram id of the created user.
     """
-    user_uuid = await user_service.add_user(user)
-    return {"user_uuid": user_uuid}
+    telegram_id = await user_service.add_user(user)
+    return {"telegram_id": telegram_id}
 
 
 @router.get("/users", status_code=status.HTTP_200_OK)
@@ -46,28 +45,28 @@ async def get_users(
     return users
 
 
-@router.get("/users/{uuid}", status_code=status.HTTP_200_OK)
+@router.get("/users/{telegram_id}", status_code=status.HTTP_200_OK)
 async def get_user(
-    uuid: uuid.UUID,
+    telegram_id: int,
     user_service: Annotated[UsersService, Depends(users_service)],
 ) -> UserProfile:
     """
-    Get a single user by UUID.
+    Get a single user by Telegram id.
 
     Args:
-        uuid (UUID): Unique identifier of the user.
+        telegram_id (int): Unique identifier of the user.
         user_service (UsersService): Service for handling user logic.
 
     Returns:
         UserProfile: User profile.
     """
-    user = await user_service.find_user(uuid)
+    user = await user_service.find_user(telegram_id)
     return user
 
 
-@router.patch("/users/{user_uuid}", status_code=status.HTTP_200_OK)
+@router.patch("/users/{telegram_id}", status_code=status.HTTP_200_OK)
 async def update_user(
-    user_uuid: uuid.UUID,
+    telegram_id: int,
     user_update: UserProfilePatch,
     user_service: Annotated[UsersService, Depends(users_service)],
 ) -> dict:
@@ -75,31 +74,31 @@ async def update_user(
     Update an existing user profile.
 
     Args:
-        user_uuid (UUID): Unique identifier of the user.
+        telegram_id (int): Unique identifier of the user.
         user_update (UserProfilePatch): Fields to update.
         user_service (UsersService): Service for handling user logic.
 
     Returns:
         dict: Status message.
     """
-    await user_service.patch_user(user_uuid, user_update)
+    await user_service.patch_user(telegram_id, user_update)
     return {"status": "ok"}
 
 
-@router.delete("/users/{user_uuid}", status_code=status.HTTP_200_OK)
+@router.delete("/users/{telegram_id}", status_code=status.HTTP_200_OK)
 async def delete_user(
-    user_uuid: uuid.UUID,
+    telegram_id: int,
     user_service: Annotated[UsersService, Depends(users_service)],
 ) -> dict:
     """
-    Delete a user by UUID.
+    Delete a user by Telegram id.
 
     Args:
-        user_uuid (UUID): Unique identifier of the user.
+        telegram_id (int): Unique identifier of the user.
         user_service (UsersService): Service for handling user logic.
 
     Returns:
         dict: Status message.
     """
-    await user_service.delete_user(user_uuid)
+    await user_service.delete_user(telegram_id)
     return {"status": "ok"}
