@@ -12,6 +12,8 @@ class Settings(BaseSettings):
     POSTGRES_PORT: int  # PostgreSQL port
     POSTGRES_DB: str  # PostgreSQL database name
 
+    # TODO: Add note in .env.example, .test.env
+
     MODE: str  # Application mode (e.g. DEV, TEST, PROD)
 
     # Configuration to load .env file with UTF-8 encoding

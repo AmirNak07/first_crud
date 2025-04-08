@@ -98,3 +98,5 @@ class SQLAlchemyRepository(AbstractRepository, Generic[T]):
             raise RepositoryError("Database error when deleting all records") from e
         except Exception:
             raise
+
+# Add normal type hints
