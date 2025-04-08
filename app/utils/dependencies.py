@@ -11,5 +11,5 @@ async def get_session(request: Request):
         yield session
 
 
-def users_service(session: AsyncSession = Depends(get_session)) -> UsersService:
+async def users_service(session: AsyncSession = Depends(get_session)) -> UsersService:
     return UsersService(session, UsersRepository(session))
