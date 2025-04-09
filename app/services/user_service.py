@@ -16,6 +16,7 @@ class UsersService:
 
     async def add_user(self, user: UserProfileAdd) -> int:
         try:
+            # TODO: Add a user's existence check
             user_dict = user.model_dump()
             new_user = await self.tasks_repo.add_one(user_dict)
             await self.session.flush()
@@ -59,6 +60,7 @@ class UsersService:
 
     async def patch_user(self, user_id: int, user_update: UserProfilePatch) -> None:
         try:
+            # TODO: Add a user's existence check
             user_update_dict = user_update.model_dump(exclude_defaults=True)
             user = await self.tasks_repo.find(user_id)
             if user is None:
@@ -74,6 +76,7 @@ class UsersService:
 
     async def delete_user(self, user_id: int) -> None:
         try:
+            # TODO: Add a user's existence check
             user = await self.tasks_repo.find(user_id)
             if user is None:
                 raise EntityNotFoundException("User not found.")
