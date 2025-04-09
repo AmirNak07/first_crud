@@ -1,5 +1,4 @@
 class EntityNotFoundException(Exception):
-    """Исключение, когда сущность не найдена."""
-    # TODO: Rewrite russioan annotation to english
+    """The exception is when the entity is not found."""
 
     pass
