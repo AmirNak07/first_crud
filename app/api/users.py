@@ -5,8 +5,9 @@ from fastapi import APIRouter, Depends, status
 from app.schemas.user_schema import UserProfile, UserProfileAdd, UserProfilePatch
 from app.services.user_service import UsersService
 from app.utils.dependencies import users_service
+from app.utils.security import verify_hmac_signature
 
-router = APIRouter()
+router = APIRouter(dependencies=[Depends(verify_hmac_signature)])
 
 
 @router.post("/users", status_code=status.HTTP_201_CREATED)
