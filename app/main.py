@@ -1,10 +1,10 @@
 from fastapi import FastAPI, Request, status
 from fastapi.responses import JSONResponse
-from starlette.middleware.base import BaseHTTPMiddleware
 
 from app.api import main_router
 from app.core.exceptions import RepositoryError
 from app.services.exceptions import EntityNotFoundException
+from app.utils.middlewares import ErrorHandlingMiddleware
 
 app = FastAPI(title="My Tinder")
 app.include_router(main_router)
@@ -34,16 +34,4 @@ async def repository_error_exception_handler(request: Request, exc: RepositoryEr
     )
 
 
-class ErrorHandlingMiddleware(BaseHTTPMiddleware):
-    async def dispatch(self, request, call_next):
-        try:
-            response = await call_next(request)
-            return response
-        except Exception:
-            return JSONResponse(
-                status_code=500,
-                content={"error": "Internal Server Error"},
-            )
-
-
-app.add_middleware(ErrorHandlingMiddleware) # TODO: Move ErrorHandlingMiddleware to another file(in utils maybe)
+app.add_middleware(ErrorHandlingMiddleware)
