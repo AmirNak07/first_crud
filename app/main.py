@@ -46,4 +46,4 @@ class ErrorHandlingMiddleware(BaseHTTPMiddleware):
             )
 
 
-app.add_middleware(ErrorHandlingMiddleware)
+app.add_middleware(ErrorHandlingMiddleware) # TODO: Move ErrorHandlingMiddleware to another file(in utils maybe)
