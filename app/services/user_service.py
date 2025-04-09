@@ -5,6 +5,7 @@ from app.core.exceptions import RepositoryError
 from app.repositories.user_repository import UsersRepository
 from app.schemas.user_schema import UserProfile, UserProfileAdd, UserProfilePatch
 from app.services.exceptions import (
+    EntityAlreadyExistsException,
     EntityNotFoundException,
 )
 
@@ -16,7 +17,9 @@ class UsersService:
 
     async def add_user(self, user: UserProfileAdd) -> int:
         try:
-            # TODO: Add a user's existence check
+            user_exists = await self.tasks_repo.find(user.telegram_id)
+            if user_exists:
+                raise EntityAlreadyExistsException("User already exists")
             user_dict = user.model_dump()
             new_user = await self.tasks_repo.add_one(user_dict)
             await self.session.flush()

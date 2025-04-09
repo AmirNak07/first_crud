@@ -3,7 +3,10 @@ from fastapi.responses import JSONResponse
 
 from app.api import main_router
 from app.core.exceptions import RepositoryError
-from app.services.exceptions import EntityNotFoundException
+from app.services.exceptions import (
+    EntityAlreadyExistsException,
+    EntityNotFoundException,
+)
 from app.utils.middlewares import ErrorHandlingMiddleware
 
 app = FastAPI(title="My Tinder")
@@ -31,6 +34,18 @@ async def repository_error_exception_handler(request: Request, exc: RepositoryEr
     return JSONResponse(
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         content={"detail": str(exc)},
+    )
+
+
+@app.exception_handler(EntityAlreadyExistsException)
+async def entity_already_exists_exception_handler(
+    request: Request, exc: EntityAlreadyExistsException
+):
+    """
+    Handles EntityAlreadyExistsException and return a 409 response.
+    """
+    return JSONResponse(
+        status_code=status.HTTP_409_CONFLICT, content={"detail": str(exc)}
     )
 
 
