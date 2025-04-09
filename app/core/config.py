@@ -12,8 +12,7 @@ class Settings(BaseSettings):
     POSTGRES_PORT: int  # PostgreSQL port
     POSTGRES_DB: str  # PostgreSQL database name
 
-    SECRET_API_KEY: str # TODO: Add note abount this field in this file and .env file
-    # TODO: Add note in .env.example, .test.env
+    SECRET_API_KEY: str  # Secret key for API
 
     MODE: str  # Application mode (e.g. DEV, TEST, PROD)
 
