@@ -99,4 +99,5 @@ class SQLAlchemyRepository(AbstractRepository, Generic[T]):
         except Exception:
             raise
 
+
 # Add normal type hints

@@ -24,4 +24,5 @@ class UserProfileOrm(Base):
 
     repr_cols = ("telegram_id", "name", "telegram_id")
 
+
 # Add tables: "user_preferences" and "profile_photos"

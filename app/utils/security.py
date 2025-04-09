@@ -12,8 +12,8 @@ async def verify_hmac_signature(
     x_signature: str = Header(..., alias="X-Signature"),
 ):
     try:
-        if x_timestamp == "111" and x_signature =="111":
-            return # TODO: DELETE THIS IN PROD
+        if x_timestamp == "111" and x_signature == "111":
+            return  # TODO: DELETE THIS IN PROD
         # Защита от повторных запросов
         request_time = int(x_timestamp)
         current_time = int(time.time())
