@@ -15,3 +15,6 @@ wheels/
 
 # IDE-generated files
 .vscode
+
+# OS-generated files
+.DS_Store
