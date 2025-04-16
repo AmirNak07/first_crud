@@ -1,0 +1,49 @@
+repos:
+  # Universal hooks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: detect-private-key
+      - id: check-added-large-files
+
+  # Ruff
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.11.5
+    hooks:
+      - id: ruff
+        args: [--config=backend/pyproject.toml, --fix]
+      - id: ruff-format
+        args: [--config=backend/pyproject.toml]
+
+  # Pytest
+  - repo: https://github.com/christophmeissner/pytest-pre-commit
+    rev: 1.0.0
+    hooks:
+    - id: pytest
+      pass_filenames: false
+      always_run: true
+      additional_dependencies:
+        - sqlalchemy
+        - pydantic_settings
+        - httpx
+      args:
+        - --config-file=backend/pyproject.toml
+
+  # Dockerfile
+  - repo: https://github.com/hadolint/hadolint
+    rev: v2.12.0
+    hooks:
+      - id: hadolint
+
+  # Check TODOs
+  - repo: local
+    hooks:
+      - id: check-todos
+        name: "Block TODOs/FIXMEs"
+        entry: grep -n "TODO\|FIXME" . --exclude-dir=.git
+        language: system
+        pass_filenames: false
+        always_run: true
