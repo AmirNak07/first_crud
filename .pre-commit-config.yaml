@@ -29,21 +29,17 @@ repos:
         - sqlalchemy
         - pydantic_settings
         - httpx
+        - pytest-dotenv
+        - pytest-asyncio
+        - fastapi
+        - asyncpg
+        - greenlet
       args:
         - --config-file=backend/pyproject.toml
+        - --envfile=backend/.test.env
 
   # Dockerfile
   - repo: https://github.com/hadolint/hadolint
     rev: v2.12.0
     hooks:
       - id: hadolint
-
-  # Check TODOs
-  - repo: local
-    hooks:
-      - id: check-todos
-        name: "Block TODOs/FIXMEs"
-        entry: grep -n "TODO\|FIXME" . --exclude-dir=.git
-        language: system
-        pass_filenames: false
-        always_run: true

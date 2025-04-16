@@ -1,6 +1,3 @@
-from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.ext.asyncio import AsyncSession
-
 from app.core.exceptions import RepositoryError
 from app.repositories.user_repository import UsersRepository
 from app.schemas.user_schema import UserProfile, UserProfileAdd, UserProfilePatch
@@ -8,6 +5,8 @@ from app.services.exceptions import (
     EntityAlreadyExistsException,
     EntityNotFoundException,
 )
+from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.ext.asyncio import AsyncSession
 
 
 class UsersService:

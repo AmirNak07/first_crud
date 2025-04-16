@@ -1,12 +1,11 @@
 from abc import ABC, abstractmethod
 from typing import Generic, TypeVar
 
+from app.core.database import Base
+from app.core.exceptions import RepositoryError
 from sqlalchemy import delete, select
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
-
-from app.core.database import Base
-from app.core.exceptions import RepositoryError
 
 T = TypeVar("T", bound=Base)
 

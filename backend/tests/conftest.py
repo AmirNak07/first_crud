@@ -1,4 +1,7 @@
 import pytest
+from app.core.config import settings
+from app.core.database import Base
+from app.models.user_model import UserProfileOrm  # noqa: F401
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
     AsyncSession,
@@ -6,12 +9,7 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 
-from app.core.config import settings
-from app.core.database import Base
-from app.models.user_model import UserProfileOrm  # noqa: F401
-
 TEST_DATABASE_URL = settings.DATABASE_URL
-pytest_plugins = ("pytest_asyncio",)
 
 
 @pytest.fixture(scope="session")
