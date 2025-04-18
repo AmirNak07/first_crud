@@ -2,8 +2,9 @@ import hashlib
 import hmac
 import time
 
-from app.core.config import settings
 from fastapi import Header, HTTPException
+
+from app.core.config import settings
 
 
 async def verify_hmac_signature(

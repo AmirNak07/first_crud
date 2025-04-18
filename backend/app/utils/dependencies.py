@@ -1,7 +1,8 @@
-from app.repositories.user_repository import UserProfileRepository
-from app.services.user_service import UsersService
 from fastapi import Depends, Request
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.repositories.user_repository import UserProfileRepository
+from app.services.user_service import UsersService
 
 
 async def get_session(request: Request):

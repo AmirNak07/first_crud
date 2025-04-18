@@ -1,8 +1,9 @@
 from enum import Enum
 
-from app.core.database import Base
 from sqlalchemy import BigInteger, SmallInteger, String
 from sqlalchemy.orm import Mapped, mapped_column
+
+from app.core.database import Base
 
 
 class SexEnumDB(str, Enum):
