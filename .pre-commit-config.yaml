@@ -11,12 +11,11 @@ repos:
 
   # Ruff
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.11.5
+    rev: v0.11.6
     hooks:
       - id: ruff
-        args: [--config=backend/pyproject.toml, --fix]
+        args: [--fix]
       - id: ruff-format
-        args: [--config=backend/pyproject.toml]
 
   # Pytest
   - repo: https://github.com/christophmeissner/pytest-pre-commit
