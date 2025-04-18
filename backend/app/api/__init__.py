@@ -46,4 +46,4 @@ async def ping() -> dict:
 
 
 # Include the user-related routes under the "User" tag
-main_router.include_router(users_router, tags=["User"])
+main_router.include_router(users_router, tags=["Users Profile"])

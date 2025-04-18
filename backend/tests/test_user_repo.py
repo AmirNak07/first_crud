@@ -1,18 +1,18 @@
 import pytest
 from app.models.user_model import UserProfileOrm
-from app.repositories.user_repository import UsersRepository
+from app.repositories.user_repository import UserProfileRepository
 from sqlalchemy import inspect
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
 @pytest.fixture
-async def repo(async_test_session: AsyncSession) -> UsersRepository:
-    return UsersRepository(async_test_session)
+async def repo(async_test_session: AsyncSession) -> UserProfileRepository:
+    return UserProfileRepository(async_test_session)
 
 
 @pytest.fixture
 async def new_user(
-    async_test_session: AsyncSession, repo: UsersRepository
+    async_test_session: AsyncSession, repo: UserProfileRepository
 ) -> UserProfileOrm:
     user = {
         "name": "Адам",
@@ -29,7 +29,7 @@ async def new_user(
 
 @pytest.mark.asyncio(loop_scope="session")
 @pytest.mark.usefixtures("clear_db")
-class TestUsersRepository:
+class TestUserProfileRepository:
     async def test_add_one_success(
         self,
         new_user: UserProfileOrm,
@@ -40,7 +40,7 @@ class TestUsersRepository:
         assert new_user.city == "Эдем"
         assert new_user.sex == "Мужской"
 
-    async def test_find_all(self, repo: UsersRepository) -> None:
+    async def test_find_all(self, repo: UserProfileRepository) -> None:
         users = [
             {
                 "name": "Адам",
@@ -76,7 +76,7 @@ class TestUsersRepository:
 
     async def test_find_success(
         self,
-        repo: UsersRepository,
+        repo: UserProfileRepository,
         new_user: UserProfileOrm,
     ) -> None:
         telegram_id = new_user.telegram_id
@@ -88,13 +88,13 @@ class TestUsersRepository:
         assert res.city == "Эдем"
         assert res.sex == "Мужской"
 
-    async def test_find_not_found(self, repo: UsersRepository) -> None:
+    async def test_find_not_found(self, repo: UserProfileRepository) -> None:
         user = await repo.find(0)
         assert user is None
 
     async def test_patch_success(
         self,
-        repo: UsersRepository,
+        repo: UserProfileRepository,
         new_user: UserProfileOrm,
     ) -> None:
         telegram_id = new_user.telegram_id
@@ -108,7 +108,7 @@ class TestUsersRepository:
     async def test_delete_success(
         self,
         async_test_session: AsyncSession,
-        repo: UsersRepository,
+        repo: UserProfileRepository,
         new_user: UserProfileOrm,
     ) -> None:
         await repo.delete(new_user)

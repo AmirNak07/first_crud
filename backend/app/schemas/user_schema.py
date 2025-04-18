@@ -8,7 +8,7 @@ class SexEnum(str, Enum):
     female = "Женский"
 
 
-class UserProfileAdd(BaseModel):
+class UserProfileCreate(BaseModel):
     telegram_id: int
     name: str = Field(max_length=100)
     about_me: str | None = Field(default=None, max_length=300)
@@ -19,7 +19,7 @@ class UserProfileAdd(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
-class UserProfile(UserProfileAdd):
+class UserProfileRead(UserProfileCreate):
     telegram_id: int
 
 

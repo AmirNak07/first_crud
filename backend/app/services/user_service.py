@@ -1,6 +1,6 @@
 from app.core.exceptions import RepositoryError
-from app.repositories.user_repository import UsersRepository
-from app.schemas.user_schema import UserProfile, UserProfileAdd, UserProfilePatch
+from app.repositories.user_repository import UserProfileRepository
+from app.schemas.user_schema import UserProfileCreate, UserProfilePatch, UserProfileRead
 from app.services.exceptions import (
     EntityAlreadyExistsException,
     EntityNotFoundException,
@@ -10,11 +10,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 
 class UsersService:
-    def __init__(self, session: AsyncSession, tasks_repo: UsersRepository) -> None:
+    def __init__(
+        self, session: AsyncSession, tasks_repo: UserProfileRepository
+    ) -> None:
         self.session: AsyncSession = session
-        self.tasks_repo: UsersRepository = tasks_repo
+        self.tasks_repo: UserProfileRepository = tasks_repo
 
-    async def add_user(self, user: UserProfileAdd) -> int:
+    async def add_user(self, user: UserProfileCreate) -> int:
         try:
             user_exists = await self.tasks_repo.find(user.telegram_id)
             if user_exists:
@@ -32,10 +34,10 @@ class UsersService:
             await self.session.rollback()
             raise RepositoryError("Database error occurred during add_user") from e
 
-    async def find_all_users(self) -> list[UserProfile]:
+    async def find_all_users(self) -> list[UserProfileRead]:
         try:
             users = await self.tasks_repo.find_all()
-            res = [UserProfile.model_validate(user[0]) for user in users]
+            res = [UserProfileRead.model_validate(user[0]) for user in users]
             return res
         except RepositoryError as e:
             await self.session.rollback()
@@ -46,13 +48,13 @@ class UsersService:
                 "Database error occurred during find_all_users"
             ) from e
 
-    async def find_user(self, user_id: int) -> UserProfile:
+    async def find_user(self, user_id: int) -> UserProfileRead:
         try:
             user = await self.tasks_repo.find(user_id)
             if user is None:
                 await self.session.rollback()
                 raise EntityNotFoundException("User not found.")
-            return UserProfile.model_validate(user)
+            return UserProfileRead.model_validate(user)
         except RepositoryError as e:
             await self.session.rollback()
             raise e
