@@ -4,7 +4,7 @@ from contextlib import asynccontextmanager
 from fastapi import APIRouter
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
-from app.api.users import router as users_router
+from app.api.users import users_router
 from app.core.config import settings
 
 
@@ -46,4 +46,4 @@ async def ping() -> dict:
 
 
 # Include the user-related routes under the "User" tag
-main_router.include_router(users_router, tags=["Users Profile"])
+main_router.include_router(users_router, prefix="/users")
