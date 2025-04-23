@@ -10,8 +10,8 @@ from app.utils.security import verify_hmac_signature
 router = APIRouter(dependencies=[Depends(verify_hmac_signature)])
 
 
-@router.post("/", status_code=status.HTTP_201_CREATED)
-async def create_user(
+@router.post("/profiles", status_code=status.HTTP_201_CREATED)
+async def create_user_profile(
     user: UserProfileCreate,
     user_service: Annotated[UsersService, Depends(users_service)],
 ) -> dict:
@@ -29,8 +29,8 @@ async def create_user(
     return {"telegram_id": telegram_id}
 
 
-@router.get("/", status_code=status.HTTP_200_OK)
-async def get_users(
+@router.get("/profiles", status_code=status.HTTP_200_OK)
+async def get_user_profiles(
     user_service: Annotated[UsersService, Depends(users_service)],
 ) -> list[UserProfileRead]:
     """
@@ -46,8 +46,8 @@ async def get_users(
     return users
 
 
-@router.get("/{telegram_id}", status_code=status.HTTP_200_OK)
-async def get_user(
+@router.get("/{telegram_id}/profiles", status_code=status.HTTP_200_OK)
+async def get_user_profile(
     telegram_id: int,
     user_service: Annotated[UsersService, Depends(users_service)],
 ) -> UserProfileRead:
@@ -65,8 +65,8 @@ async def get_user(
     return user
 
 
-@router.patch("/{telegram_id}", status_code=status.HTTP_200_OK)
-async def update_user(
+@router.patch("/{telegram_id}/profiles", status_code=status.HTTP_200_OK)
+async def update_user_profile(
     telegram_id: int,
     user_update: UserProfilePatch,
     user_service: Annotated[UsersService, Depends(users_service)],
@@ -86,8 +86,8 @@ async def update_user(
     return {"status": "ok"}
 
 
-@router.delete("/{telegram_id}", status_code=status.HTTP_200_OK)
-async def delete_user(
+@router.delete("/{telegram_id}/profiles", status_code=status.HTTP_200_OK)
+async def delete_user_profile(
     telegram_id: int,
     user_service: Annotated[UsersService, Depends(users_service)],
 ) -> dict:
