@@ -1,31 +1,21 @@
-import hashlib
-import hmac
-import time
-
-from fastapi import Header, HTTPException
+import jwt
+from fastapi import Depends, HTTPException
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 from app.core.config import settings
 
+security = HTTPBearer()
 
-async def verify_hmac_signature(
-    x_timestamp: str = Header(..., alias="X-Timestamp"),
-    x_signature: str = Header(..., alias="X-Signature"),
+
+async def verify_jwt_token(
+    credentials: HTTPAuthorizationCredentials = Depends(security),
 ):
+    token = credentials.credentials
     try:
-        request_time = int(x_timestamp)
-        current_time = int(time.time())
-        if abs(current_time - request_time) > 30:
-            raise HTTPException(
-                status_code=401, detail="Timestamp is too old or too far in future"
-            )
-
-        # Проверка подписи
-        expected_signature = hmac.new(
-            settings.SECRET_API_KEY.encode(), x_timestamp.encode(), hashlib.sha256
-        ).hexdigest()
-
-        if not hmac.compare_digest(expected_signature, x_signature):
-            raise HTTPException(status_code=401, detail="Invalid HMAC signature")
-
-    except Exception as e:
-        raise HTTPException(status_code=401, detail="Invalid authentication") from e
+        payload = jwt.decode(token, settings.SECRET_API_KEY, algorithms=["HS256"])
+        if payload.get("bot_id") != "telegram-bot":
+            raise HTTPException(status_code=403, detail="Invalid bot")
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Token expired") from None
+    except jwt.PyJWTError:
+        raise HTTPException(status_code=403, detail="Invalid token") from None
