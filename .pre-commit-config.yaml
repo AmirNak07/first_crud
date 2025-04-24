@@ -33,6 +33,7 @@ repos:
         - fastapi
         - asyncpg
         - greenlet
+        - pyjwt
       args:
         - --config-file=backend/pyproject.toml
         - --envfile=backend/.test.env
