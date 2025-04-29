@@ -39,7 +39,7 @@ class UsersService:
             user_update_dict = user_update.model_dump(exclude_defaults=True)
             user = await self.uow.profiles.find(user_id)
             if user is None:
-                raise EntityNotFoundException("Пользователь не найден.")
+                raise EntityNotFoundException("User not found.")
             await self.uow.profiles.patch(user, user_update_dict)
 
     async def delete_user(self, user_id: int) -> None:
