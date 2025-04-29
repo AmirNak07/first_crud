@@ -1,8 +1,6 @@
 from fastapi import Depends, Request
-from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.repositories.user_repository import UserProfileRepository
-from app.services.user_service import UsersService
+from app.services.factories import ServiceFactory
 
 
 async def get_session(request: Request):
@@ -11,5 +9,5 @@ async def get_session(request: Request):
         yield session
 
 
-async def users_service(session: AsyncSession = Depends(get_session)) -> UsersService:
-    return UsersService(session, UserProfileRepository(session))
+async def get_service_factory(session=Depends(get_session)) -> ServiceFactory:
+    return ServiceFactory(session)
