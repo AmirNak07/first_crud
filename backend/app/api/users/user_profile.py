@@ -18,7 +18,7 @@ async def create_user_profile(
 
     Args:
         user (UserProfileCreate): Data for creating the user.
-        user_service (UsersService): Service for handling user logic.
+        service_factory (ServiceFactory): Factory for creating services for handling user logic.
 
     Returns:
         dict: Telegram id of the created user.
@@ -36,7 +36,7 @@ async def get_user_profiles(
     Get a list of all users.
 
     Args:
-        user_service (UsersService): Service for handling user logic.
+        service_factory (ServiceFactory): Factory for creating services for handling user logic.
 
     Returns:
         list[UserProfileRead]: List of user profiles.
@@ -56,7 +56,7 @@ async def get_user_profile(
 
     Args:
         telegram_id (int): Unique identifier of the user.
-        user_service (UsersService): Service for handling user logic.
+        service_factory (ServiceFactory): Factory for creating services for handling user logic.
 
     Returns:
         UserProfileRead: User profile.
@@ -78,7 +78,7 @@ async def update_user_profile(
     Args:
         telegram_id (int): Unique identifier of the user.
         user_update (UserProfilePatch): Fields to update.
-        user_service (UsersService): Service for handling user logic.
+        service_factory (ServiceFactory): Factory for creating services for handling user logic.
 
     Returns:
         dict: Status message.
@@ -98,7 +98,7 @@ async def delete_user_profile(
 
     Args:
         telegram_id (int): Unique identifier of the user.
-        user_service (UsersService): Service for handling user logic.
+        service_factory (ServiceFactory): Factory for creating services for handling user logic.
 
     Returns:
         dict: Status message.
