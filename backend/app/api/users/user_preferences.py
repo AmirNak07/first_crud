@@ -7,7 +7,7 @@ from app.utils.dependencies import get_service_factory
 router = APIRouter()
 
 
-@router.post("/{telegram_id}", status_code=status.HTTP_201_CREATED)
+@router.post("/{telegram_id}/preferences", status_code=status.HTTP_201_CREATED)
 async def create_preferences(
     telegram_id: int,
     preferences: UserPreferencesCreate,
