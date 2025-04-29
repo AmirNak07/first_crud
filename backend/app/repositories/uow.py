@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.exceptions import RepositoryError
 from app.repositories.preferences_repository import UserPreferenceRepository
-from app.repositories.user_repository import UserProfileRepository
+from app.repositories.profile_repository import UserProfileRepository
 
 
 class UnitOfWork:

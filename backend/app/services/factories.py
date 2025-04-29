@@ -2,7 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.repositories.uow import UnitOfWork
 from app.services.preferences_service import UserPreferencesService
-from app.services.user_service import UserProfilesService
+from app.services.profile_service import UserProfilesService
 
 
 class ServiceFactory:

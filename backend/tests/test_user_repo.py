@@ -3,7 +3,7 @@ from sqlalchemy import inspect
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.user_model import UserProfileOrm
-from app.repositories.user_repository import UserProfileRepository
+from app.repositories.profile_repository import UserProfileRepository
 
 
 @pytest.fixture
