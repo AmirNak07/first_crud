@@ -2,6 +2,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.exceptions import RepositoryError
+from app.repositories.preferences_repository import UserPreferenceRepository
 from app.repositories.user_repository import UserProfileRepository
 
 
@@ -9,6 +10,7 @@ class UnitOfWork:
     def __init__(self, session: AsyncSession):
         self.session = session
         self.profiles = UserProfileRepository(session)
+        self.preferences = UserPreferenceRepository(session)
 
     async def __aenter__(self):
         return self

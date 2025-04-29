@@ -31,3 +31,11 @@ class UserProfilePatch(BaseModel):
     sex: SexEnum | None = Field(default=None)
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class UserPreferencesCreate(BaseModel):
+    sex: SexEnum
+
+
+class UserPreferencesRead(UserPreferencesCreate):
+    telegram_id: int

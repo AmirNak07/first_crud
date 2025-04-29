@@ -1,7 +1,8 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.repositories.uow import UnitOfWork
-from app.services.user_service import UsersService
+from app.services.preferences_service import UserPreferencesService
+from app.services.user_service import UserProfilesService
 
 
 class ServiceFactory:
@@ -9,4 +10,7 @@ class ServiceFactory:
         self.uow = UnitOfWork(session)
 
     def get_profiles_services(self):
-        return UsersService(uow=self.uow)
+        return UserProfilesService(uow=self.uow)
+
+    def get_preferences_services(self):
+        return UserPreferencesService(uow=self.uow)

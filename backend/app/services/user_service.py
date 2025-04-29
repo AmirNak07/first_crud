@@ -6,7 +6,7 @@ from app.services.exceptions import (
 )
 
 
-class UsersService:
+class UserProfilesService:
     def __init__(self, uow: UnitOfWork) -> None:
         self.uow = uow
 
