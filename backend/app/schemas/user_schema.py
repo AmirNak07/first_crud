@@ -9,7 +9,6 @@ class SexEnum(str, Enum):
 
 
 class UserProfileCreate(BaseModel):
-    telegram_id: int
     name: str = Field(max_length=100)
     about_me: str | None = Field(default=None, max_length=300)
     age: int = Field(gt=0, le=120)

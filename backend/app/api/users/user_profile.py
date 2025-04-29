@@ -8,8 +8,9 @@ from app.utils.security import verify_jwt_token
 router = APIRouter(dependencies=[Depends(verify_jwt_token)])
 
 
-@router.post("/profiles", status_code=status.HTTP_201_CREATED)
+@router.post("/{telegram_id}/profiles", status_code=status.HTTP_201_CREATED)
 async def create_user_profile(
+    telegram_id: int,
     user: UserProfileCreate,
     service_factory: ServiceFactory = Depends(get_service_factory),
 ) -> dict:
@@ -23,8 +24,9 @@ async def create_user_profile(
     Returns:
         dict: Telegram id of the created user.
     """
+    user_data = UserProfileRead(telegram_id=telegram_id, **user.model_dump())
     user_service = service_factory.get_profiles_services()
-    telegram_id = await user_service.add_user(user)
+    telegram_id = await user_service.add_user(user_data)
     return {"telegram_id": telegram_id}
 
 
