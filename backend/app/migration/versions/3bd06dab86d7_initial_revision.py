@@ -1,8 +1,8 @@
-"""Initial Revision
+"""Initial revision
 
-Revision ID: a4a4d9ec3c3c
+Revision ID: 3bd06dab86d7
 Revises:
-Create Date: 2025-04-29 20:25:58.622167
+Create Date: 2025-05-04 23:47:52.539910
 
 """
 
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 from alembic import op
 
 # revision identifiers, used by Alembic.
-revision: str = "a4a4d9ec3c3c"
+revision: str = "3bd06dab86d7"
 down_revision: str | None = None
 branch_labels: str | Sequence[str] | None = None
 depends_on: str | Sequence[str] | None = None
@@ -27,7 +27,11 @@ def upgrade() -> None:
         sa.Column("about_me", sa.String(length=300), nullable=True),
         sa.Column("age", sa.SmallInteger(), nullable=False),
         sa.Column("city", sa.String(length=50), nullable=False),
-        sa.Column("sex", sa.Enum("male", "female", name="sexenumdb"), nullable=False),
+        sa.Column(
+            "sex",
+            sa.Enum("male", "female", "unspecified", name="sexenumdb"),
+            nullable=False,
+        ),
         sa.Column(
             "created_at", sa.DateTime(), server_default=sa.text("now()"), nullable=False
         ),
@@ -39,7 +43,11 @@ def upgrade() -> None:
     op.create_table(
         "user_preferences",
         sa.Column("telegram_id", sa.BigInteger(), nullable=False),
-        sa.Column("sex", sa.Enum("male", "female", name="sexenumdb"), nullable=False),
+        sa.Column(
+            "sex",
+            sa.Enum("male", "female", "unspecified", name="sexenumdb"),
+            nullable=False,
+        ),
         sa.Column(
             "created_at", sa.DateTime(), server_default=sa.text("now()"), nullable=False
         ),

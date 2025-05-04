@@ -6,6 +6,7 @@ from pydantic import BaseModel, ConfigDict, Field, PositiveInt
 class SexEnum(str, Enum):
     male = "Мужской"
     female = "Женский"
+    unspecified = "Не указан"
 
 
 class UserProfileCreate(BaseModel):
@@ -13,7 +14,7 @@ class UserProfileCreate(BaseModel):
     about_me: str | None = Field(default=None, max_length=300)
     age: PositiveInt = Field(le=120)
     city: str = Field(max_length=50)
-    sex: SexEnum
+    sex: SexEnum = Field(default="Не указан")
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -33,7 +34,7 @@ class UserProfilePatch(BaseModel):
 
 
 class UserPreferencesCreate(BaseModel):
-    sex: SexEnum
+    sex: SexEnum = Field(default="Не указан")
 
 
 class UserPreferencesRead(UserPreferencesCreate):

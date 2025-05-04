@@ -9,6 +9,7 @@ from app.core.database import Base
 class SexEnumDB(str, Enum):
     male = "Мужской"
     female = "Женский"
+    unspecified = "Не указан"
 
 
 class UserProfileOrm(Base):
