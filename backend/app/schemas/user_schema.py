@@ -36,6 +36,8 @@ class UserProfilePatch(BaseModel):
 class UserPreferencesCreate(BaseModel):
     sex: SexEnum = Field(default="Не указан")
 
+    model_config = ConfigDict(from_attributes=True)
+
 
 class UserPreferencesRead(UserPreferencesCreate):
     telegram_id: PositiveInt
